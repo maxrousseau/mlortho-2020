@@ -1,0 +1,8 @@
+db
+db/*
+__pycache__
+__pycache__/*
+.nox/*
+.nox
+venv
+venv/*

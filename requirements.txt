@@ -1,0 +1,8 @@
+pytest
+flake8
+numpy
+pandas
+opencv-python
+tensorflow
+mtcnn
+face_alignment
