@@ -3,6 +3,6 @@ flake8
 numpy
 pandas
 opencv-python
-tensorflow
-mtcnn
 face_alignment
+-f https://download.pytorch.org/whl/torch_stable.html torch==1.4.0+cpu torchvision==0.5.0+cpu
+facenet-pytorch
