@@ -37,32 +37,6 @@ class Linear(object):
         y_diff = self.y2-self.y1
         x_diff = self.x2-self.x1
 
-        self.slopes = y_diff/x_diff
-        self.constants = self.y1 - (self.slopes*self.x1)
-
-    def solve(self, input_slope, input_constant):
-        """calculates Y coordinate for a given X
-
-        Parameters
-        ----------
-        input_slope : int
-           value of the slope of the function we want to compare
-        input_constant : int
-           value of the constant of the function we want to compare
-
-        Returns
-        ------
-        output_y : int
-            resulting X and Y from the arithmetic computations
-        """
-        input_slope = np.array(input_slope)
-        input_constant = np.array(input_constant)
-
-        x_inter = (input_constant - self.constants) / (self.slopes - input_slope)
-        y_inter = (self.slopes*x_inter) + self.constants
-
-        return x_inter, y_inter
-
     def euc_dist(self):
         """compute the Euclidean distance between 2 landmarks
         Calculates the Euclidean distance between 2 landmarks and returns it as
@@ -82,5 +56,3 @@ class Linear(object):
         distance = np.sqrt((np.square(height)+np.square(width)))
 
         return distance
-
-
