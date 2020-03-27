@@ -41,8 +41,6 @@ img_path = os.path.join(root_path, 'db/img/')
 img_labels = os.listdir(img_path)
 img_list = [ os.path.join(img_path, i) for i in img_labels]
 csv_path = os.path.join(root_path, 'db/db_tags.csv')
-landmarks = list(range(69))
-landmarks = [str(i) for i in landmarks[1:69]]
 dataset = []
 
 # logging
@@ -89,7 +87,7 @@ def image_processing(IMG_PATH):
         img_no = img_no.replace(s,'')
 
     img = cv2.cvtColor(cv2.imread(IMG_PATH), cv2.COLOR_BGR2RGB)
-    img = cv2.resize(img, (160,160))
+#    img = cv2.resize(img, (160,160))
 
     detector = MTCNN()
     face = detector.detect(img)
@@ -144,15 +142,15 @@ def statistics(DATA):
     male_mwfw = (np.mean(male['mwfw']), np.std(male['mwfw']))
 
     # data from 1987 study
-    male_1987_fi = np.random.normal(88.5, 5.1, 50)
-    male_1987_lfh = np.random.normal(59.2, 2.7, 50)
-    male_1987_mwfh = np.random.normal(70.8, 3.8, 50)
-    male_1987_mwfw = np.random.normal(80.3, 6.8, 50)
+    male_1987_fi = np.random.normal(0.885, 0.051, 50)
+    male_1987_lfh = np.random.normal(0.592, 0.027, 50)
+    male_1987_mwfh = np.random.normal(0.803, 0.068, 50)
+    male_1987_mwfw = np.random.normal(0.708, 0.038, 50)
 
-    female_1987_fi = np.random.normal(86.2, 4.6, 50)
-    female_1987_lfh = np.random.normal(58.6, 2.9, 50)
-    female_1987_mwfh = np.random.normal(70.1, 4.2, 50)
-    female_1987_mwfw = np.random.normal(81.7, 6.0, 50)
+    female_1987_fi = np.random.normal(0.862, 0.046, 50)
+    female_1987_lfh = np.random.normal(0.586, 0.029, 50)
+    female_1987_mwfh = np.random.normal(0.817, 0.060, 50)
+    female_1987_mwfw = np.random.normal(0.701, 0.042, 50)
 
     # ANOVA vs data from 1989
     female_fi_AOV = stats.f_oneway(female_1987_fi, female['fi'])
@@ -182,10 +180,9 @@ def main():
         dataset.append(subject_data)
 
     ms, mp, fs, fp = statistics(dataset)
-    print(ms)
-    print(mp)
-    print(fs)
-    print(fp)
+    f = open('results.txt', 'w')
+    f.write(str(ms) + '\n'  + str(fs) + '\n' + str(mp) + '\n' + str(fp))
+    f.close()
 
 if __name__ == "__main__":
     main()
