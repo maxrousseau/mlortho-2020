@@ -87,7 +87,6 @@ def image_processing(IMG_PATH):
         img_no = img_no.replace(s,'')
 
     img = cv2.cvtColor(cv2.imread(IMG_PATH), cv2.COLOR_BGR2RGB)
-#    img = cv2.resize(img, (160,160))
 
     detector = MTCNN()
     face = detector.detect(img)
