@@ -8,18 +8,7 @@
 # (Proffit, p.149-155)
 #
 # We present novel methods of pre-treatment facial analysis via automated
-# facial segmentation and classification via autoencoder.
-#
-# The aim is to compare and challenge traditional methods of facial classification
-# (long/short face, asymmetrical face, etc.) to a more contemporary approach
-# (segmentation and deep clustering with autoencoders with transfer learning
-# from other face datasets). To identify patterns in facial morphology at the
-# beginning of treatment.
-#
-# The aim is to use our modern method to create a distribution of facial
-# morphology that will be easier to interpret than having to go through a long
-# list of metrics. We want our model to be able to tell us what if the patient
-# is in the norm and if not where is he straying from the norm.
+# facial recognition, landmark placement and analysis.
 
 import sys
 import os
