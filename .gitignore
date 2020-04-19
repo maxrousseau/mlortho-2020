@@ -8,3 +8,6 @@ venv
 venv/*
 figures.ipynb
 .ipynb_checkpoints/*
+.gitignore
+figures.ipynb
+noxfile.py
