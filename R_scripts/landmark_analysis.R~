@@ -1,0 +1,48 @@
+## author: maxime rousseau
+## date: May 29, 2020
+
+## load libraries
+library("tidyverse", "irr")
+
+## set paths for data
+path_db <- normalizePath("../db")
+files <- unlist(dir(path_db))
+
+## load rater calibration data
+## NOTE: refactor for efficiency code quality (i.e. map/funcprog)
+cal_files <- files[c(1:4)]
+cal_tbl <- file.path(path_db, cal_files) %>%
+    map(read_csv)
+
+day_rater_cols <- function(table, day, rater) {
+    new_table <- table %>%
+        add_column(Day = day, Rater = rater)
+    return(new_table)
+}
+
+merge_tbl <- function(table) {
+    t1 <- day_rater_cols(table[[1]],
+                         1,
+                         1)
+    t2 <- day_rater_cols(table[[2]],
+                         2,
+                         1)
+    t3 <- day_rater_cols(table[[3]],
+                         1,
+                         2)
+    t4 <- day_rater_cols(table[[4]],
+                         2,
+                         2)
+    return(bind_rows(list(t1, t2, t3, t4)))
+}
+
+compute_icc <- function(TABLE, RATER, LDMK) {
+    t1 <- subset(TABLE,
+                 Rater == Rater & Day == 1)$LDMK
+    t2 <- subset(TABLE,
+                 Rater == Rater & Day == 2)$LDMK
+}   
+
+
+## intra-rater ICC
+cal_tbl <- merge_tbl(cal_tbl)
