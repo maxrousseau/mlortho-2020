@@ -1,7 +1,6 @@
 ## author: maxime rousseau
 ## date: May 29, 2020
 
-
 ## load libraries
 library("tidyverse", "irr")
 
@@ -41,9 +40,9 @@ euc_dist <- function(TABLE, L1, L2){
 compute_metrics <- function(TABLE){
 
     ## perform computations
-    mn_gb <- euc_dist(TABLE, "Mn", "Gb")
-    mn_sn <- euc_dist(TABLE, "Mn", "Sn")
-    mn_lm <- euc_dist(TABLE, "Mn", "Lm")
+    mn_gb <- euc_dist(TABLE, "Gn", "N")
+    mn_sn <- euc_dist(TABLE, "Gn", "Sn")
+    mn_lm <- euc_dist(TABLE, "Gn", "Lm")
     um_sn <- euc_dist(TABLE, "Um", "Sn")
     lv_lm <- euc_dist(TABLE, "Lv", "Lm")
     um_uv <- euc_dist(TABLE, "Um", "Uv")
@@ -196,13 +195,13 @@ exp_tbl <- files[c(5:8)] %>%
 
 pfla_ldmk <- as.character(c(9, 58, 67, 63, 52, 34, 28))
 pfla_lbl <- c("Id",
-              "Mn-X", "Mn-Y",
+              "Gn-X", "Gn-Y",
               "Lv-X", "Lv-Y",
               "Lm-X", "Lm-Y",
               "Um-X", "Um-Y",
               "Uv-X", "Uv-Y",
               "Sn-X", "Sn-Y",
-              "Gb-X", "Gb-Y"
+              "N-X", "N-Y"
               )
 
 exp_mn <- bind_rows(exp_tbl[[1]], exp_tbl[[2]]) %>%
@@ -219,6 +218,9 @@ manual_metrics <- compute_metrics(exp_mn)
 auto_metrics <- compute_metrics(exp_at)
 
 hyp_results <- hyp_test(auto_metrics, manual_metrics)
+## get confidence intervals
+
+
 
 ## Male vs Female ----------------------------------------
 
