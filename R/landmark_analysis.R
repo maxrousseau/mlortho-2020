@@ -85,7 +85,8 @@ intra_icc <- function(TABLE, RATER, METRIC) {
     test_tbl <- bind_cols(t1, t2)
 
     return(icc(test_tbl, model = "twoway",
-               type = "agreement"))
+               type = "agreement",
+               unit = "average"))
 }
 
 inter_icc <- function(TABLE, METRIC) {
@@ -99,7 +100,8 @@ inter_icc <- function(TABLE, METRIC) {
     test_tbl <- bind_cols(t1, t2)
 
     return(icc(test_tbl, model = "twoway",
-               type = "agreement"))
+               type = "agreement",
+               unit = "average"))
 }
 
 compute_icc <- function(TABLE){
@@ -218,12 +220,67 @@ exp_at <- select(exp_mn, Age, Gender, Id) %>%
 manual_metrics <- compute_metrics(exp_mn)
 auto_metrics <- compute_metrics(exp_at)
 
-hyp_results <- hyp_test(auto_metrics, manual_metrics)
+## hyp_results <- hyp_test(auto_metrics, manual_metrics)
 ## get confidence intervals
 
 
 
 ## Plot results ------------------------------------------
+
+
+table0 <- full_cal_tbl %>% filter(Day == 1) %>% select(`File No.`, Rater, lower_face,
+                                                       max_st, mand_st, u_lip,
+                                                       l_lip)
+table1 <- table0 %>% pivot_longer(c(`lower_face`,
+                                    `max_st`,
+                                    `mand_st`,
+                                    `l_lip`,
+                                    `u_lip`),
+                                  names_to = "metrics",
+                                  values_to = "results")
+
+inter_plot_df <- table1 %>% pivot_wider(names_from = "Rater", values_from = "results") %>%
+    rename(Id = 'File No.', Rater_1 = `1`, Rater_2 = `2`)
+
+## inter rater metrics plot
+ggplot(data = inter_plot_df) +
+    geom_point(mapping = aes(x = Rater_1,
+                             y = Rater_2,
+                             color = metrics)) +
+    geom_abline()
+
+table2 <- full_cal_tbl %>%
+    select(`File No.`, Day, Rater, lower_face,
+           max_st, mand_st, u_lip, l_lip)
+
+table3 <- table2 %>%
+    pivot_longer(c(`lower_face`,
+                   `max_st`,
+                   `mand_st`,
+                   `l_lip`,
+                   `u_lip`),
+                 names_to = "metrics",
+                 values_to = "results")
+
+intra_plot_df <- table3 %>%
+    pivot_wider(names_from = "Day", values_from = "results") %>%
+    
+    rename(Id = 'File No.', Day_1 = `1`, Day_2 = `2`) %>%
+    mutate(Rater = as.character(Rater))
+
+
+## intra rater metrics plot
+ggplot(data = intra_plot_df) +
+    geom_point(mapping = aes(x = Day_1,
+                             y = Day_2,
+                             color = Rater)) +
+    geom_abline()
+
+## bland altman analysis ----------------------------------------
+mean_difference = 
+average_ = 
+limits_agreement = 
+
 
 
 ## Export results ----------------------------------------
