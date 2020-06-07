@@ -2,7 +2,8 @@
 ## date: May 29, 2020
 
 ## load libraries
-library("tidyverse", "irr")
+library(tidyverse)
+library(irr)
 
 ## Functions ----------------------------------------
 
@@ -222,15 +223,8 @@ hyp_results <- hyp_test(auto_metrics, manual_metrics)
 
 
 
-## Male vs Female ----------------------------------------
+## Plot results ------------------------------------------
 
-f_metrics <- compute_metrics(filter(exp_at,
-                                    Gender == "F"
-                                    ))
-m_metrics <- compute_metrics(filter(exp_at,
-                                    Gender == "M"
-                                    ))
-mf_hyp_res <- hyp_test(f_metrics, m_metrics) ##NSF, discard
 
 ## Export results ----------------------------------------
 write_csv(ICC_results, "./icc_results.csv")
