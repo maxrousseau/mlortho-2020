@@ -248,6 +248,7 @@ ggplot(data = inter_plot_df) +
                              y = Rater_2,
                              color = metrics)) +
     geom_abline()
+ggsave("inter_rater.tiff", width = 7, height = 7)
 
 table2 <- full_cal_tbl %>%
     select(`File No.`, Day, Rater, lower_face,
@@ -276,14 +277,17 @@ ggplot(data = intra_plot_df) +
                              color = metrics,
                              shape = Rater)) +
     geom_abline()
+ggsave("intra_rater.tiff", width = 7, height = 7)
 
 ## bland altman analysis ----------------------------------------
 diff_df <- auto_metrics - manual_metrics
 avg_df <- (auto_metrics + manual_metrics) / 2
 mean_diff <- map_dbl(diff_df, mean)
+perc_diff <- ((diff_df / avg_df) * 100) %>%
+    map_dbl(mean)
 ci_diff <- map_dbl(diff_df, function(x) sd(x) * 1.96)
-llimit_agreement <- mean_diff - twosd_diff
-ulimit_agreement <- mean_diff + twosd_diff
+llimit_agreement <- mean_diff - ci_diff
+ulimit_agreement <- mean_diff + ci_diff
 metric_names <- c('lower_face',
                   'max_st',
                   'mand_st',
@@ -313,12 +317,38 @@ ggplot(data = ba_plot_tbl) +
                                               color= metrics),
                linetype = "dotted") +
     facet_wrap(~ metrics, nrow=3)
+ggsave("ba_analysis.tiff", width = 7, height = 7)
 
-## Export results ----------------------------------------
-write_csv(ICC_results, "./icc_results.csv")
+summary_df <- function(df, fcn, name){
+    map(df, fcn) %>%
+    as_tibble %>%
+    pivot_longer(metric_names,
+                 names_to = "metric",
+                 values_to = name)
+}
+
+
+ba_analysis_tabl <- summary_df(manual_metrics, mean, "manual_mu") %>%
+    right_join(summary_df(manual_metrics, sd, "manual_sd"), by = "metric") %>%
+    right_join(summary_df(auto_metrics, mean, "auto_mu"), by = "metric") %>%
+    right_join(summary_df(auto_metrics, sd, "auto_sd"), by = "metric") %>%
+    bind_cols(tibble(mean_diff)) %>%
+    bind_cols(tibble(ulimit_agreement)) %>%
+    bind_cols(tibble(llimit_agreement)) %>%
+    bind_cols(tibble(perc_diff))
+
+
+## EXPORT results ----------------------------------------
+results_table <- ICC_results %>% rename(metric = "metrics") %>%
+    left_join(ba_analysis_tabl, by = "metric")
+
+write_csv(results_table, "./results.csv")
+
+## save plots to tiff file format
 
 ## TODO: write main function
-## -> final output should be a simple table
+## -> clean up graphs
+## -> final output should be a simple table (Ok)
 ## -> rewrite with functionals (pipes, map, etc.)
-## -> read: https://r4ds.had.co.nz/program-intro.html
+
 
