@@ -273,19 +273,51 @@ intra_plot_df <- table3 %>%
 ggplot(data = intra_plot_df) +
     geom_point(mapping = aes(x = Day_1,
                              y = Day_2,
-                             color = Rater)) +
+                             color = metrics,
+                             shape = Rater)) +
     geom_abline()
 
 ## bland altman analysis ----------------------------------------
-mean_difference = 
-average_ = 
-limits_agreement = 
+diff_df <- auto_metrics - manual_metrics
+avg_df <- (auto_metrics + manual_metrics) / 2
+mean_diff <- map_dbl(diff_df, mean)
+ci_diff <- map_dbl(diff_df, function(x) sd(x) * 1.96)
+llimit_agreement <- mean_diff - twosd_diff
+ulimit_agreement <- mean_diff + twosd_diff
 
 
+metric_names <- c('lower_face',
+                  'max_st',
+                  'mand_st',
+                  'l_lip',
+                  'u_lip')
+diff_plot_tbl <- as_tibble(diff_df) %>% pivot_longer(metric_names,
+                                                     names_to = "metrics",
+                                                     values_to = "difference")
+avg_plot_tbl <- as_tibble(avg_df) %>% pivot_longer(metric_names,
+                                                   names_to = "metrics",
+                                                   values_to = "average")
+ba_plot_tbl <- bind_cols(diff_plot_tbl, avg_plot_tbl)
+## bland-altman analysis results
+ba_lines <- tibble(metrics = metric_names, mean_diff, ulimit_agreement, llimit_agreement)
+
+## fix axis make more pretty
+ggplot(data = ba_plot_tbl) +
+    geom_point(mapping = aes(x = average,
+                              y = difference,
+                             color = metrics)) +
+    geom_hline(data = ba_lines, mapping = aes(yintercept = mean_diff,
+                                              color = metrics)) +
+    geom_hline(data = ba_lines, mapping = aes(yintercept = ulimit_agreement,
+                                              color= metrics),
+               linetype = "dotted") +
+    geom_hline(data = ba_lines, mapping = aes(yintercept = llimit_agreement,
+                                              color= metrics),
+               linetype = "dotted") +
+    facet_wrap(~ metrics, nrow=3)
 
 ## Export results ----------------------------------------
 write_csv(ICC_results, "./icc_results.csv")
-write_csv(hyp_results, "./hyp_results.csv")
 
 ## TODO: write main function
 ## -> final output should be a simple table
