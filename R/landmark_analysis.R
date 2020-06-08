@@ -284,8 +284,6 @@ mean_diff <- map_dbl(diff_df, mean)
 ci_diff <- map_dbl(diff_df, function(x) sd(x) * 1.96)
 llimit_agreement <- mean_diff - twosd_diff
 ulimit_agreement <- mean_diff + twosd_diff
-
-
 metric_names <- c('lower_face',
                   'max_st',
                   'mand_st',
